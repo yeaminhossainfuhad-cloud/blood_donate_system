@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ donor.full_name }} | Blood Donate & Request{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-body p-4 text-center">
+                {% if donor.profile_picture %}
+                    <img src="{{ donor.profile_picture.url }}" class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover;" alt="{{ donor.full_name }}">
+                {% else %}
+                    <div class="avatar-placeholder mb-3">{{ donor.full_name|first|upper }}</div>
+                {% endif %}
+                <h3>{{ donor.full_name }}</h3>
+                <span class="badge badge-blood mb-3">{{ donor.blood_group }}</span>
+
+                <table class="table table-borderless text-start mt-3">
+                    <tr><th>Location</th><td>{{ donor.location }}</td></tr>
+                    <tr><th>Last Donation</th><td>{{ donor.last_donation_date|default:"—" }}</td></tr>
+                    <tr><th>Availability</th>
+                        <td>
+                            {% if donor.is_available %}
+                                <span class="badge bg-success">Available</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Not Available</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr><th>About</th><td>{{ donor.description|default:"—" }}</td></tr>
+                </table>
+
+                {% if user.is_authenticated %}
+                <a href="tel:{{ donor.phone }}" class="btn btn-danger">📞 {{ donor.phone }}</a>
+                {% else %}
+                <p class="text-muted"><a href="{% url 'login' %}">Login</a> to see contact details.</p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{% url 'donor-list' %}" class="btn btn-outline-secondary btn-sm">&larr; Back to Donor List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

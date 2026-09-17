@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}{{ blood_request.patient_name }} | Blood Donate & Request{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <h3>{{ blood_request.patient_name }}</h3>
+                    <span class="badge badge-blood fs-6">{{ blood_request.blood_group }}</span>
+                </div>
+
+                {% if blood_request.status == 'PENDING' %}
+                    <span class="badge bg-warning text-dark mb-3">Pending</span>
+                {% elif blood_request.status == 'FULFILLED' %}
+                    <span class="badge bg-success mb-3">Fulfilled</span>
+                {% else %}
+                    <span class="badge bg-secondary mb-3">Cancelled</span>
+                {% endif %}
+
+                <table class="table table-borderless mt-2">
+                    <tr><th>Hospital</th><td>{{ blood_request.hospital_name }}</td></tr>
+                    <tr><th>Location</th><td>{{ blood_request.location }}</td></tr>
+                    <tr><th>Required Date</th><td>{{ blood_request.required_date }}</td></tr>
+                    <tr><th>Bags Required</th><td>{{ blood_request.bags_required }}</td></tr>
+                    <tr><th>Contact</th><td>{{ blood_request.contact_number }}</td></tr>
+                    <tr><th>Reason / Notes</th><td>{{ blood_request.description|default:"—" }}</td></tr>
+                    <tr><th>Posted by</th><td>{{ blood_request.requester.username }}</td></tr>
+                    <tr><th>Posted on</th><td>{{ blood_request.created_at|date:"d M Y" }}</td></tr>
+                </table>
+
+                {% if user == blood_request.requester %}
+                <div class="d-flex gap-2 mt-3">
+                    <a href="{% url 'request-update' blood_request.pk %}" class="btn btn-outline-primary">Edit</a>
+                    <a href="{% url 'request-delete' blood_request.pk %}" class="btn btn-outline-danger">Delete</a>
+                </div>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{% url 'request-list' %}" class="btn btn-outline-secondary btn-sm">&larr; Back to Requests</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

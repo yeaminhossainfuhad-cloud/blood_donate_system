@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}My Profile | Blood Donate & Request{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-body p-4 text-center">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover;" alt="{{ profile.full_name }}">
+                {% else %}
+                    <div class="avatar-placeholder mb-3">{{ profile.full_name|first|upper }}</div>
+                {% endif %}
+                <h3>{{ profile.full_name }}</h3>
+                <span class="badge badge-blood mb-3">{{ profile.blood_group }}</span>
+
+                <table class="table table-borderless text-start mt-3">
+                    <tr><th>Username</th><td>{{ user.username }}</td></tr>
+                    <tr><th>Email</th><td>{{ user.email }}</td></tr>
+                    <tr><th>Phone</th><td>{{ profile.phone }}</td></tr>
+                    <tr><th>Location</th><td>{{ profile.location }}</td></tr>
+                    <tr><th>Date of Birth</th><td>{{ profile.date_of_birth|default:"—" }}</td></tr>
+                    <tr><th>Last Donation</th><td>{{ profile.last_donation_date|default:"—" }}</td></tr>
+                    <tr><th>Availability</th>
+                        <td>
+                            {% if profile.is_available %}
+                                <span class="badge bg-success">Available</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Not Available</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr><th>About</th><td>{{ profile.description|default:"—" }}</td></tr>
+                </table>
+
+                <a href="{% url 'profile-edit' %}" class="btn btn-danger">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

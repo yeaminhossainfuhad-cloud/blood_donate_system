@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Home | Blood Donate & Request{% endblock %}
+
+{% block content %}
+<div class="hero text-center mb-5">
+    <h1 class="display-5 fw-bold">Blood Donate & Request</h1>
+    <p class="lead">Find a donor. Save a life.</p>
+    <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+        <a href="{% url 'donor-list' %}" class="btn btn-light btn-lg">🔍 Find Blood Donor</a>
+        <a href="{% url 'request-create' %}" class="btn btn-outline-light btn-lg">🆘 Request Blood</a>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg">❤️ Become a Donor</a>
+        {% endif %}
+        <a href="{% url 'request-list' %}" class="btn btn-outline-light btn-lg">📋 View Blood Requests</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-5">
+    <div class="col-md-4">
+        <div class="card stat-card">
+            <div class="stat-number">{{ stats.donor_count }}</div>
+            <div class="text-muted">Available Donors</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card">
+            <div class="stat-number">{{ stats.pending_requests }}</div>
+            <div class="text-muted">Pending Requests</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card">
+            <div class="stat-number">{{ stats.fulfilled_requests }}</div>
+            <div class="text-muted">Fulfilled Requests</div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mb-3">Recent Urgent Requests</h3>
+{% if recent_requests %}
+<div class="row g-3">
+    {% for req in recent_requests %}
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <span class="badge badge-blood mb-2">{{ req.blood_group }}</span>
+                <h5 class="card-title">{{ req.patient_name }}</h5>
+                <p class="card-text text-muted mb-1">{{ req.hospital_name }}, {{ req.location }}</p>
+                <p class="card-text small">Needed by {{ req.required_date }}</p>
+                <a href="{% url 'request-detail' req.pk %}" class="btn btn-sm btn-outline-danger">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">No active blood requests right now.</p>
+{% endif %}
+{% endblock %}

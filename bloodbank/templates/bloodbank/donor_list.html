@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Find Donors | Blood Donate & Request{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Find Blood Donors</h2>
+
+<form method="get" class="row g-2 mb-4 align-items-end">
+    <div class="col-md-3">
+        <label class="form-label">Blood Group</label>
+        {{ form.blood_group }}
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Location</label>
+        {{ form.location }}
+    </div>
+    <div class="col-md-3 form-check ms-2">
+        {{ form.available_only }}
+        <label class="form-check-label" for="{{ form.available_only.id_for_label }}">Available only</label>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-danger w-100">Search</button>
+    </div>
+</form>
+
+{% if donors %}
+<div class="row g-3">
+    {% for donor in donors %}
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                {% if donor.profile_picture %}
+                    <img src="{{ donor.profile_picture.url }}" class="rounded-circle mb-2" width="80" height="80" style="object-fit: cover;" alt="{{ donor.full_name }}">
+                {% else %}
+                    <div class="avatar-placeholder mb-2" style="width:80px;height:80px;font-size:1.5rem;">{{ donor.full_name|first|upper }}</div>
+                {% endif %}
+                <h5 class="card-title mb-1">{{ donor.full_name }}</h5>
+                <span class="badge badge-blood mb-2">{{ donor.blood_group }}</span>
+                <p class="card-text text-muted mb-1">{{ donor.location }}</p>
+                {% if donor.is_available %}
+                    <span class="badge bg-success mb-2">Available</span>
+                {% else %}
+                    <span class="badge bg-secondary mb-2">Not Available</span>
+                {% endif %}
+                <div>
+                    <a href="{% url 'donor-detail' donor.pk %}" class="btn btn-sm btn-outline-danger">View Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% include 'bloodbank/_pagination.html' %}
+
+{% else %}
+<p class="text-muted">No donors match your search.</p>
+{% endif %}
+{% endblock %}

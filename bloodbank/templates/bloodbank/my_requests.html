@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}My Requests | Blood Donate & Request{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">My Blood Requests</h2>
+    <a href="{% url 'request-create' %}" class="btn btn-danger">+ New Request</a>
+</div>
+
+{% if requests %}
+<div class="table-responsive">
+<table class="table table-hover bg-white align-middle">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Blood Group</th>
+            <th>Hospital</th>
+            <th>Required Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for req in requests %}
+        <tr>
+            <td>{{ req.patient_name }}</td>
+            <td><span class="badge badge-blood">{{ req.blood_group }}</span></td>
+            <td>{{ req.hospital_name }}</td>
+            <td>{{ req.required_date }}</td>
+            <td>
+                {% if req.status == 'PENDING' %}<span class="badge bg-warning text-dark">Pending</span>
+                {% elif req.status == 'FULFILLED' %}<span class="badge bg-success">Fulfilled</span>
+                {% else %}<span class="badge bg-secondary">Cancelled</span>{% endif %}
+            </td>
+            <td>
+                <a href="{% url 'request-detail' req.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
+                <a href="{% url 'request-update' req.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'request-delete' req.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% include 'bloodbank/_pagination.html' %}
+
+{% else %}
+<p class="text-muted">You haven't created any blood requests yet.</p>
+{% endif %}
+{% endblock %}
